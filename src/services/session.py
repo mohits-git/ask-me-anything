@@ -42,3 +42,9 @@ class SessionService:
             q for q in questions if q.answer is not None
         ]
         return (session, questions)
+
+    def is_session_owner(self, session_id, password) -> bool:
+        session_result = self._session_repo.find_session_by_id(session_id)
+        if verify_hashed_password(password, session_result['password_hash']):
+            return True
+        return False

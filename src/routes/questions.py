@@ -17,9 +17,14 @@ def create_question():
     }
     ```
     """
-    data = request.get_json()
+    # TODO: form / json
+    # data = request.get_json()
+    session_id = request.form.get("session_id")
+    question = request.form.get("question")
+    if not session_id or not question:
+        return ("Bad Request", 400)
     question_id = questions_service.create_question(
-        data['session_id'], data['question'])
+        session_id, question)
     return {'question_id': question_id}
 
 

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Me Anything</title>
+</head>
+
+<body>
+    <h1>Ask Me Anything</h1>
+    <h2>Create Your AMA Link Now!</h2>
+
+    <form action="/api/sessions" method="post">
+        <div>
+            <label for="name">Your Name: </label> <br />
+            <input id="name" type="text" name="name" placeholder="Your Name">
+        </div>
+
+        <div>
+            <label for="password">Your password to secure your AMA link: </label> <br />
+            <input id="password" type="password" name="password" placeholder="Your password">
+        </div>
+
+        <button>
+            Create
+        </button>
+    </form>
+
+
+    <h3>Already Created an AMA? See what questions have people asked?</h3>
+    <form id="existing-ama-form" action="#" method="post">
+        <div>
+            <label for="link">Your AMA Link: </label> <br />
+            <input id="link" type="text" name="link" placeholder="Your AMA Link: ">
+        </div>
+
+        <div>
+            <label for="password">Password to access your AMA link: </label> <br />
+            <input id="password" type="password" name="password" placeholder="Your password">
+        </div>
+
+        <button>
+            Create
+        </button>
+    </form>
+
+
+    <script>
+        form = document.querySelector("#existing-ama-form");
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            window.location.replace("http://localhost:5000/sessions/<session_id>");
+
+            const formData = new FormData(form);
+            const link = formData.get("link")?.toString();
+            if (!link) return;
+            const parts = link.split("/");
+            const session_id = parts[parts.length - 1];
+            const password = formData.get("password")?.toString();
+            if (!password) return;
+
+            window.location.assign(
+                `http://localhost:5000/sessions/${session_id}?password=${password}`,
+            );
+        });
+    </script>
+</body>
+
+</html>

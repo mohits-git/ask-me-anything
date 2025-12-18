@@ -1,0 +1,31 @@
+from flask import Blueprint, render_template, request
+from app import session_service
+
+
+pages_blueprint = Blueprint('pages', __name__)
+
+
+@pages_blueprint.route('/', methods=["GET"])
+def home_page():
+    return render_template('home.html')
+
+
+@pages_blueprint.route('/sessions/<session_id>', methods=["GET"])
+def session_page(session_id: str):
+    owner = False
+
+    password = request.args.get('password')
+
+    if password and session_service.is_session_owner(session_id, password):
+        owner = True
+
+    session, questions = session_service.get_session(session_id, password)
+
+    if not session:
+        return ("Not Found", 404)
+
+    return render_template(
+        'session.html',
+        password=(password if owner else None),
+        session=session,
+        questions=questions)

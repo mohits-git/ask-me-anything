@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session | AMA</title>
+</head>
+
+<body>
+    {% if session %}
+    <h1>ASK, {{ session.name }}</h1>
+
+    {% else %}
+    <h1>Invalid Session</h1>
+    {% endif %}
+
+
+    {% if questions %}
+    <ul>
+    {% for question in questions %}
+        <li>
+            <span>Question: {{ question.question }}</span>
+            {% if question.answer %}
+                <span>Answer: {{question.answer}}</span>
+            {% else %}
+                {% if password %}
+                    <div>
+                        <span>Post Your Answer:</span>
+                        <form id="answer-form" action="#">
+                            <input type="text" name="question_id" value="{{ question.id }}" style="display: none;" />
+                            <input type="password" name="password" value="{{ password }}" style="display: none;" />
+                            <input type="text" name="answer" placeholder="Answer" />
+                            <button>Post</button>
+                        </form>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+    {% else %}
+    <h1>No Questions Asked Yet!</h1>
+    {% endif %}
+
+    {% if session %}
+        <h3>Ask a question from {{ session.name }}</h3>
+        <form id="question-submit-form" action="/api/questions" method="post">
+            <input name="session_id" value="{{ session.id }}" style="display: none;" />
+            <input type="text" name="question" placeholder="enter your question...">
+            <button>Ask!</button>
+        </form>
+    {% endif %}
+
+
+    <script>
+        form = document.querySelector("#answer-form");
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+            const question_id = formData.get("question_id")?.toString();
+            if (!question_id) return;
+            const answer = formData.get("answer")?.toString();
+            if (!answer) return;
+            const password = formData.get("password")?.toString();
+            if (!password) return;
+
+            await fetch(`http://localhost:5000/api/questions/${question_id}`, {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Basic ${password}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ answer: answer }),
+            });
+
+            window.location.reload();
+        });
+    </script>
+</body>
+
+</html>

@@ -17,8 +17,13 @@ def create_session():
     }
     ```
     """
-    data = request.get_json()
-    session_id = session_service.create_session(data['name'], data['password'])
+    # TODO: json vs form
+    # data = request.get_json()
+    name = request.form.get('name')
+    password = request.form.get('password')
+    if name is None or password is None:
+        return ("Bad Request", 400)
+    session_id = session_service.create_session(name, password)
     ama_url = f"{base_url}/sessions/{session_id}"
     return {
         "ama_url": ama_url
