@@ -1,0 +1,43 @@
+from flask import Blueprint, request
+from app import questions_service
+
+
+questions_blueprint = Blueprint('question', __name__, url_prefix='/api')
+
+
+@questions_blueprint.post("/questions")
+def create_question():
+    """
+    POST /questions to create a new question in AMA session
+    expected request json body:
+    ```
+    {
+      session_id: str,
+      question: str
+    }
+    ```
+    """
+    data = request.get_json()
+    question_id = questions_service.create_question(
+        data['session_id'], data['question'])
+    return {'question_id': question_id}
+
+
+@questions_blueprint.patch("/questions/<question_id>")
+def answer_question(question_id):
+    """
+    Post the Answer to the question asked in your particular AMA session
+    Requires Authorization header using 'Basic' strategy with AMA session password
+    ```
+      Authorization: Basic <session-password>
+    ```
+    """
+    data = request.get_json()
+    authorization_header = request.headers.get('Authorization')
+    password = authorization_header.removeprefix(
+        'Basic ') if authorization_header else None
+    if not password:
+        return "Invalid Password"
+    questions_service.submit_answer(
+        password, question_id, data['answer'])
+    return 'Ok'
