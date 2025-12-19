@@ -11,7 +11,7 @@
     <h1>Ask Me Anything</h1>
     <h2>Create Your AMA Link Now!</h2>
 
-    <form action="/api/sessions" method="post">
+    <form id="ama-form" action="/api/sessions" method="post">
         <div>
             <label for="name">Your Name: </label> <br />
             <input id="name" type="text" name="name" placeholder="Your Name">
@@ -27,6 +27,10 @@
         </button>
     </form>
 
+    <div id="ama-link">
+        <!-- user's created ama link -->
+    </div>
+
 
     <h3>Already Created an AMA? See what questions have people asked?</h3>
     <form id="existing-ama-form" action="#" method="post">
@@ -37,20 +41,19 @@
 
         <div>
             <label for="password">Password to access your AMA link: </label> <br />
-            <input id="password" type="password" name="password" placeholder="Your password">
+            <input id="ama-password" type="password" name="password" placeholder="Your password">
         </div>
 
         <button>
-            Create
+            Submit
         </button>
     </form>
 
 
     <script>
-        form = document.querySelector("#existing-ama-form");
-        form.addEventListener("submit", function (event) {
+        const form = document.querySelector("#existing-ama-form");
+        form?.addEventListener("submit", function (event) {
             event.preventDefault();
-            window.location.replace("http://localhost:5000/sessions/<session_id>");
 
             const formData = new FormData(form);
             const link = formData.get("link")?.toString();
@@ -63,6 +66,41 @@
             window.location.assign(
                 `http://localhost:5000/sessions/${session_id}?password=${password}`,
             );
+        });
+
+        const amaLinkContainer = document.querySelector("#ama-link");
+
+        const amaForm = document.querySelector("#ama-form");
+        amaForm?.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(amaForm);
+            const name = formData.get("name")?.toString();
+            if (!name) return;
+            const password = formData.get("password")?.toString();
+            if (!password) return;
+
+            const response = await fetch("/api/sessions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({name: name, password: password})
+            });
+
+            const responseData = await response.json();
+            const ama_url = responseData.ama_url
+            amaForm.reset();
+
+            h3 = document.createElement('h3');
+            h3.innerText = "Your AMA Link. Share it with your friends!"
+
+            a = document.createElement('a');
+            a.innerText = ama_url
+            a.href = ama_url
+
+            amaLinkContainer.appendChild(h3)
+            amaLinkContainer.appendChild(a)
         });
     </script>
 </body>

@@ -17,10 +17,12 @@ def create_session():
     }
     ```
     """
-    # TODO: json vs form
-    # data = request.get_json()
     name = request.form.get('name')
     password = request.form.get('password')
+    if request.headers.get('Content-Type') == 'application/json':
+        data = request.get_json()
+        name = data['name']
+        password = data['password']
     if name is None or password is None:
         return ("Bad Request", 400)
     session_id = session_service.create_session(name, password)

@@ -20,14 +20,14 @@
     <ul>
     {% for question in questions %}
         <li>
-            <span>Question: {{ question.question }}</span>
+            <span>Question: {{ question.question }}</span> <br/>
             {% if question.answer %}
                 <span>Answer: {{question.answer}}</span>
             {% else %}
                 {% if password %}
                     <div>
                         <span>Post Your Answer:</span>
-                        <form id="answer-form" action="#">
+                        <form id="answer-form">
                             <input type="text" name="question_id" value="{{ question.id }}" style="display: none;" />
                             <input type="password" name="password" value="{{ password }}" style="display: none;" />
                             <input type="text" name="answer" placeholder="Answer" />
@@ -45,7 +45,7 @@
 
     {% if session %}
         <h3>Ask a question from {{ session.name }}</h3>
-        <form id="question-submit-form" action="/api/questions" method="post">
+        <form id="question-submit-form">
             <input name="session_id" value="{{ session.id }}" style="display: none;" />
             <input type="text" name="question" placeholder="enter your question...">
             <button>Ask!</button>
@@ -54,9 +54,9 @@
 
 
     <script>
-        form = document.querySelector("#answer-form");
+        const form = document.querySelector("#answer-form");
 
-        form.addEventListener("submit", async function (event) {
+        form?.addEventListener("submit", async function (event) {
             event.preventDefault();
 
             const formData = new FormData(form);
@@ -78,6 +78,27 @@
 
             window.location.reload();
         });
+
+        const questionForm = document.querySelector("#question-submit-form");
+
+        questionForm?.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(questionForm);
+            const session_id = formData.get("session_id");
+            const question = formData.get("question");
+
+            await fetch("http://localhost:5000/api/questions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ session_id: session_id, question: question }),
+            });
+
+            window.location.reload()
+        });
+
     </script>
 </body>
 
