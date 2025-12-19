@@ -2,9 +2,17 @@ from flask import Flask
 
 import routes
 
-app = Flask(__name__)
 
-routes.register(app)
+def main():
+    app = Flask(__name__)
+    routes.register(app)
+    return app
+
+
+def run():
+    app = main()
+    app.run()
+
 
 if __name__ == '__main__':
-    app.run()
+    run()
