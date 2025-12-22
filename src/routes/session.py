@@ -1,5 +1,6 @@
 from flask import Blueprint, request
 from app import session_service, base_url
+import time
 
 
 session_blueprint = Blueprint('session', __name__, url_prefix='/api')
@@ -19,13 +20,25 @@ def create_session():
     """
     name = request.form.get('name')
     password = request.form.get('password')
+    expires_in = request.form.get('expires_in')  # int: number of hours
     if request.headers.get('Content-Type') == 'application/json':
         data = request.get_json()
         name = data['name']
         password = data['password']
+        expires_in = data['expires_in']
+
+    expires_at = int(time.time()) + 3600  # default 1 hour expiry
+
+    try:
+        if expires_in:
+            expires_in = int(expires_in)
+            expires_at = int(time.time()) + (expires_in*60*60)
+    except ValueError:
+        return ("Bad Request", 400)
+
     if name is None or password is None:
         return ("Bad Request", 400)
-    session_id = session_service.create_session(name, password)
+    session_id = session_service.create_session(name, password, expires_at)
     ama_url = f"{base_url}/sessions/{session_id}"
     return {
         "ama_url": ama_url
@@ -36,7 +49,7 @@ def create_session():
 def get_session(session_id: str):
     """
     get all your ama questions answered and unanswered
-    if provided authorization header using 'basic' strategy with ama session password
+    if provided auth header using 'basic' strategy with ama session password
     ```
       authorization: basic <session-password>
     ```
@@ -45,8 +58,11 @@ def get_session(session_id: str):
     authorization_header = request.headers.get('Authorization')
     password = authorization_header.removeprefix(
         'Basic ') if authorization_header else None
-    session, questions = session_service.get_session(
+    res = session_service.get_session(
         session_id, password or None)
+    if res is None:
+        return ("Not Found", 404)
+    session, questions = res
     return {
         'name': session.name,
         'questions': questions

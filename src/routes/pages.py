@@ -19,7 +19,11 @@ def session_page(session_id: str):
     if password and session_service.is_session_owner(session_id, password):
         owner = True
 
-    session, questions = session_service.get_session(session_id, password)
+    res = session_service.get_session(session_id, password)
+    if res is None:
+        return ("Not Found", 404)
+
+    session, questions = res
 
     if not session:
         return ("Not Found", 404)
