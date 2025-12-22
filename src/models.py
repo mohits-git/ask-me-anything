@@ -6,6 +6,7 @@ class Session:
     id: str
     name: str
     password_hash: str
+    expires_at: int
 
 
 @dataclass

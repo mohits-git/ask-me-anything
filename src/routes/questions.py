@@ -44,7 +44,10 @@ def answer_question(question_id):
     password = authorization_header.removeprefix(
         'Basic ') if authorization_header else None
     if not password:
-        return "Invalid Password"
-    questions_service.submit_answer(
-        password, question_id, data['answer'])
+        return ("Invalid Password", 401)
+    try:
+        questions_service.submit_answer(
+            password, question_id, data['answer'])
+    except Exception as e:
+        return (str(e), 500)
     return 'Ok'

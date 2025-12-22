@@ -24,7 +24,8 @@ class QuestionsService:
         question_exists = Question(**question_exists)
         session_exists = self._session_repo.find_session_by_id(
             question_exists.session_id)
-        session_exists = Session(**session_exists)
+        if session_exists is None:
+            raise Exception("Not Found")
         if not verify_hashed_password(password, session_exists.password_hash):
             raise Exception("Forbidden")
         self._questions_repo.answer_question(question_id, answer)
