@@ -1,6 +1,6 @@
 import unittest
 
-from .uuid import generate_uuid
+from .uuid_custom import generate_uuid
 
 
 class TestUUID(unittest.TestCase):
