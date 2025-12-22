@@ -2,8 +2,15 @@ from database.questions_repository import QuestionsRepository
 from database.session_repository import SessionRepository
 from services.questions import QuestionsService
 from services.session import SessionService
+import os
 
-_db_uri = "ama.db"
+
+# load envs
+_db_uri = os.getenv('DB_URI')
+
+
+if not _db_uri:
+    _db_uri = "ama.db"
 _session_repo = SessionRepository(_db_uri)
 _questions_repo = QuestionsRepository(_db_uri)
 

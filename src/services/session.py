@@ -1,7 +1,7 @@
 from database.questions_repository import QuestionsRepository
 from database.session_repository import SessionRepository
 from models import Question, Session
-from utils.uuid import generate_uuid
+from utils.uuid_custom import generate_uuid
 from utils.hashing_service import hash_password, verify_hashed_password
 
 
