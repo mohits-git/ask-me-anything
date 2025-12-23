@@ -28,19 +28,19 @@ class SessionRepository:
                     session.is_live,
                 ))
 
-    def find_session_by_id(self, id) -> Session | None:
+    def find_session_by_id(self, session_id: str) -> Session | None:
         with DatabaseConnection(self._db_uri) as connection:
             cursor = connection.cursor()
             query = "SELECT * FROM sessions WHERE id = ?"
-            cursor.execute(query, (id,))
+            cursor.execute(query, (session_id,))
             result = cursor.fetchone()
             if result is None:
                 return None
             return Session(*result[:4], is_live=bool(result[4]))
 
-    def expire_session(self, id) -> None:
+    def expire_session(self, session_id) -> None:
         with DatabaseConnection(self._db_uri) as connection:
             cursor = connection.cursor()
             current_time = time.time() - 1
             query = "UPDATE sessions SET expires_at = ? WHERE id = ?"
-            cursor.execute(query, (current_time, id))
+            cursor.execute(query, (current_time, session_id))

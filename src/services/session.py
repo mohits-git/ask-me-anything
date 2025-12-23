@@ -21,21 +21,21 @@ class SessionService:
                        expires_at: int,
                        is_live: bool) -> str:
         password_hash = hash_password(password)
-        id = generate_uuid()
-        session = Session(id, name, password_hash, expires_at, is_live)
+        session_id = generate_uuid()
+        session = Session(session_id, name, password_hash, expires_at, is_live)
         self._session_repo.create_session(session)
-        return id
+        return session_id
 
     def get_session(
             self,
-            id: str,
+            session_id: str,
             password: str | None) -> tuple[Session, list[Question]] | None:
         current_timestamp = time.time()
-        session = self._session_repo.find_session_by_id(id)
+        session = self._session_repo.find_session_by_id(session_id)
         if (session is None) or session.expires_at <= current_timestamp:
             return None
         questions_result = self._questions_repo.find_all_questions(
-            session_id=id)
+            session_id=session_id)
         questions = [
             Question(res['id'], res['session_id'],
                      res['question'], res['answer'])
@@ -72,9 +72,9 @@ class SessionService:
         return True
 
     def end_session(self, session_id, password) -> bool:
-        if not self.is_session_live(id):
+        if not self.is_session_live(session_id):
             return False
-        if not self.is_session_owner(id, password):
+        if not self.is_session_owner(session_id, password):
             return False
         self._session_repo.expire_session(session_id)
         return True
