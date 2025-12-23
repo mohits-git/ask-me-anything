@@ -35,7 +35,7 @@
             background: linear-gradient(135deg, #FAFBFC 0%, #F0F4F8 100%);
             color: var(--text-primary);
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 20px;
             position: relative;
             overflow-x: hidden;
         }
@@ -71,107 +71,204 @@
             margin: 0 auto;
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
         }
 
         .nav {
             display: flex;
-            justify-content: end;
+            justify-content: space-between;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+            padding: 16px 24px;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px var(--shadow);
+            border: 1px solid var(--border);
+            animation: fadeInDown 0.6s ease-out;
         }
 
-        .copy-link {
+        .nav-left {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 12px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(46, 125, 50, 0.1);
+            border-radius: 20px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-text {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--success);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         header {
             text-align: center;
-            margin-bottom: 48px;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.7s ease-out;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3rem);
+            font-size: clamp(1.5rem, 4vw, 2.25rem);
             font-weight: 900;
             color: var(--primary);
-            margin-bottom: 8px;
             letter-spacing: -0.02em;
-            line-height: 1.1;
+            line-height: 1.2;
         }
 
         .session-name {
             color: var(--accent);
         }
 
-        h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 24px;
-            letter-spacing: -0.01em;
-        }
-
-        h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 20px;
-            letter-spacing: -0.01em;
-        }
-
         .card {
             background: var(--surface);
-            border-radius: 24px;
-            padding: 40px;
-            margin-bottom: 32px;
+            border-radius: 20px;
+            padding: 24px;
             box-shadow: 0 4px 20px var(--shadow);
             border: 1px solid var(--border);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 60px 40px;
+        .ask-form-card {
+            background: linear-gradient(135deg, rgba(217, 100, 89, 0.05) 0%, rgba(242, 174, 114, 0.05) 100%);
+            border: 2px solid var(--accent-light);
+            animation: fadeInUp 0.8s ease-out;
+            margin-bottom: 16px;
         }
 
-        .empty-state h1 {
-            color: var(--text-secondary);
-            font-size: 1.75rem;
-            margin-bottom: 12px;
+        .ask-form-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
         }
 
-        .empty-state p {
-            color: var(--text-secondary);
-            font-size: 1.0625rem;
+        .questions-container {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInUp 0.9s ease-out;
+        }
+
+        .questions-card {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .questions-header {
+            padding: 24px 24px 16px;
+            border-bottom: 2px solid var(--border);
+            background: linear-gradient(135deg, rgba(46, 82, 102, 0.03) 0%, rgba(110, 136, 152, 0.03) 100%);
+        }
+
+        .questions-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.01em;
+        }
+
+        .questions-list-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            scroll-behavior: smooth;
+        }
+
+        .questions-list-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .questions-list-wrapper::-webkit-scrollbar-track {
+            background: var(--background);
+            border-radius: 4px;
+        }
+
+        .questions-list-wrapper::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 4px;
+        }
+
+        .questions-list-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
         }
 
         .questions-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 16px;
         }
 
         .question-item {
             background: var(--background);
             border-radius: 16px;
-            padding: 24px;
+            padding: 20px;
             border: 2px solid var(--border);
             transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            animation: slideInQuestion 0.5s ease-out forwards;
+        }
+
+        @keyframes slideInQuestion {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .question-item:hover {
             border-color: var(--primary-light);
-            box-shadow: 0 4px 12px var(--shadow);
+            box-shadow: 0 4px 16px var(--shadow);
+            transform: translateY(-2px);
         }
 
         .question-label {
-            font-size: 0.8125rem;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -181,21 +278,32 @@
         }
 
         .question-text {
-            font-size: 1.125rem;
+            font-size: 1.0625rem;
             color: var(--text-primary);
             line-height: 1.6;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             font-weight: 500;
         }
 
         .answer-section {
             border-top: 1px solid var(--border);
-            padding-top: 16px;
-            margin-top: 16px;
+            padding-top: 12px;
+            margin-top: 12px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .answer-label {
-            font-size: 0.8125rem;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -205,47 +313,76 @@
         }
 
         .answer-text {
-            font-size: 1.0625rem;
+            font-size: 1rem;
             color: var(--text-primary);
             line-height: 1.7;
             background: var(--surface);
-            padding: 16px;
-            border-radius: 12px;
+            padding: 14px;
+            border-radius: 10px;
             border-left: 4px solid var(--accent-light);
         }
 
         .answer-form-container {
-            margin-top: 16px;
+            margin-top: 12px;
+            animation: fadeIn 0.3s ease-out;
         }
 
         .answer-form-label {
-            font-size: 0.875rem;
+            font-size: 0.8125rem;
             font-weight: 600;
             color: var(--text-secondary);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             display: block;
         }
 
-        .form-group {
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
             margin-bottom: 16px;
+            opacity: 0.5;
         }
 
-        label {
-            display: block;
+        .empty-state h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-secondary);
             margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-primary);
-            font-size: 0.9375rem;
-            letter-spacing: 0.01em;
+        }
+
+        .empty-state p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .inline-form {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .inline-form input[type="text"] {
+            flex: 1;
+        }
+
+        .inline-form button {
+            flex-shrink: 0;
+            padding: 14px 28px;
         }
 
         input[type="text"],
         input[type="password"] {
             width: 100%;
-            padding: 14px 18px;
+            padding: 12px 16px;
             border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 1rem;
+            border-radius: 10px;
+            font-size: 0.9375rem;
             font-family: 'DM Sans', sans-serif;
             color: var(--text-primary);
             background: var(--surface);
@@ -266,12 +403,12 @@
         }
 
         button {
-            padding: 12px 28px;
+            padding: 10px 20px;
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
             color: white;
             border: none;
             border-radius: 10px;
-            font-size: 0.9375rem;
+            font-size: 0.875rem;
             font-weight: 700;
             font-family: 'DM Sans', sans-serif;
             cursor: pointer;
@@ -289,50 +426,111 @@
             transform: translateY(0);
         }
 
-        .ask-form-card {
-            background: linear-gradient(135deg, rgba(217, 100, 89, 0.05) 0%, rgba(242, 174, 114, 0.05) 100%);
-            border: 2px solid var(--accent-light);
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            box-shadow: 0 4px 12px rgba(46, 82, 102, 0.25);
         }
 
-        .ask-form-card:hover {
-            border-color: var(--accent);
-            box-shadow: 0 8px 30px rgba(217, 100, 89, 0.15);
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(46, 82, 102, 0.35);
         }
 
-        .inline-form {
+        .scroll-to-bottom {
+            position: absolute;
+            bottom: 80px;
+            right: 32px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(46, 82, 102, 0.3);
             display: flex;
-            gap: 12px;
-            align-items: flex-start;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            opacity: 0;
+            transform: scale(0.8);
+            pointer-events: none;
+            transition: all 0.3s ease;
         }
 
-        .inline-form input[type="text"] {
-            flex: 1;
+        .scroll-to-bottom.visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
         }
 
-        .inline-form button {
-            flex-shrink: 0;
-            padding: 14px 32px;
+        .scroll-to-bottom:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(46, 82, 102, 0.4);
         }
 
-        @media (max-width: 640px) {
-            .card {
-                padding: 28px 24px;
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                height: calc(100vh - 20px);
+            }
+
+            .nav {
+                flex-direction: column;
+                padding: 12px 16px;
+                gap: 8px;
+            }
+
+            .nav-left,
+            .nav-right {
+                width: 100%;
+                justify-content: space-between;
             }
 
             h1 {
-                font-size: 2rem;
-            }
-
-            h2 {
                 font-size: 1.5rem;
             }
 
-            h3 {
-                font-size: 1.25rem;
+            .card {
+                padding: 20px;
+            }
+
+            .ask-form-card {
+                padding: 16px;
+            }
+
+            .questions-header {
+                padding: 20px 20px 12px;
+            }
+
+            .questions-list-wrapper {
+                padding: 16px 20px;
             }
 
             .question-item {
-                padding: 20px;
+                padding: 16px;
             }
 
             .inline-form {
@@ -342,6 +540,11 @@
             .inline-form button {
                 width: 100%;
             }
+
+            .scroll-to-bottom {
+                bottom: 60px;
+                right: 16px;
+            }
         }
     </style>
 </head>
@@ -349,29 +552,29 @@
 <body>
     <div class="container">
         <div class='nav'>
-            <div class="copy-link">
-                <button class="copy-link-button">
+            <div class="nav-left">
+                <div class="status-indicator">
+                    <div class="status-dot"></div>
+                    <span class="status-text">Live</span>
+                </div>
+            </div>
+            <div class="nav-right">
+                <button class="copy-link-button btn-secondary">
                     Invite People
                 </button>
+                {% if password %}
+                <button id='end-session' type="button">
+                    End Session
+                </button>
+                {% endif %}
             </div>
-            {% if password %}
-            <button id='end-session' type="button">
-                End Session
-            </button>
-            {% endif %}
         </div>
+
         {% if session %}
         <header>
             <h1>Ask Anything From <span class="session-name">{{ session.name }}</span> Anonymously!</h1>
         </header>
-        {% else %}
-        <div class="card empty-state">
-            <h1>Invalid Session</h1>
-            <p>The session you're looking for doesn't exist or has expired.</p>
-        </div>
-        {% endif %}
 
-        {% if session %}
         <div class="card ask-form-card">
             <h3>Ask a question</h3>
             <form id="question-submit-form" class="inline-form">
@@ -380,42 +583,60 @@
                 <button type="submit">Ask!</button>
             </form>
         </div>
-        {% endif %}
-        {% if questions %}
-        <div class="card">
-            <h2>Questions & Answers</h2>
-            <ul class="questions-list">
-                {% for question in questions %}
-                <li class="question-item">
-                    <span class="question-label">Question</span>
-                    <div class="question-text">{{ question.question }}</div>
 
-                    {% if question.answer %}
-                    <div class="answer-section">
-                        <span class="answer-label">Answer</span>
-                        <div class="answer-text">{{ question.answer }}</div>
-                    </div>
-                    {% else %}
-                    {% if password %}
-                    <div class="answer-form-container">
-                        <span class="answer-form-label">Post Your Answer:</span>
-                        <form class="answer-form inline-form">
-                            <input type="text" name="question_id" value="{{ question.id }}" style="display: none;" />
-                            <input type="password" name="password" value="{{ password }}" style="display: none;" />
-                            <input type="text" name="answer" placeholder="Type your answer here..." required />
-                            <button type="submit">Post</button>
-                        </form>
-                    </div>
-                    {% endif %}
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
+        <div class="questions-container">
+            <div class="card questions-card">
+                <div class="questions-header">
+                    <h2>Questions & Answers</h2>
+                </div>
+                <div class="questions-list-wrapper" id="questions-wrapper">
+                    <ul class="questions-list" id="questions-list">
+                        {% if questions %}
+                        {% for question in questions %}
+                        <li class="question-item">
+                            <span class="question-label">Question</span>
+                            <div class="question-text">{{ question.question }}</div>
+
+                            {% if question.answer %}
+                            <div class="answer-section">
+                                <span class="answer-label">Answer</span>
+                                <div class="answer-text">{{ question.answer }}</div>
+                            </div>
+                            {% else %}
+                            {% if password %}
+                            <div class="answer-form-container">
+                                <span class="answer-form-label">Post Your Answer:</span>
+                                <form class="answer-form inline-form">
+                                    <input type="text" name="question_id" value="{{ question.id }}"
+                                        style="display: none;" />
+                                    <input type="password" name="password" value="{{ password }}"
+                                        style="display: none;" />
+                                    <input type="text" name="answer" placeholder="Type your answer here..." required />
+                                    <button type="submit">Post</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                        {% else %}
+                        <div class="empty-state">
+                            <div class="empty-state-icon">💬</div>
+                            <h3>No Questions Yet!</h3>
+                            <p>Be the first to ask a question above.</p>
+                        </div>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
         </div>
+
+        <button class="scroll-to-bottom" id="scroll-to-bottom">↓</button>
+
         {% else %}
         <div class="card empty-state">
-            <h1>No Questions Asked Yet!</h1>
-            <p>Be the first to ask a question below.</p>
+            <h1>Invalid Session</h1>
+            <p>The session you're looking for doesn't exist or has expired.</p>
         </div>
         {% endif %}
     </div>
@@ -431,53 +652,77 @@
             session.password = null
         }
 
+        const questionsWrapper = document.getElementById('questions-wrapper');
+        const questionsList = document.getElementById('questions-list');
+        const scrollToBottomBtn = document.getElementById('scroll-to-bottom');
+
+        let autoScroll = true;
+        let isUserScrolling = false;
+        let scrollTimeout;
+
+        function isNearBottom() {
+            const threshold = 150;
+            return questionsWrapper.scrollHeight - questionsWrapper.scrollTop - questionsWrapper.clientHeight < threshold;
+        }
+
+        function scrollToBottom(smooth = true) {
+            questionsWrapper.scrollTo({
+                top: questionsWrapper.scrollHeight,
+                behavior: smooth ? 'smooth' : 'auto'
+            });
+        }
+
+        function updateScrollButton() {
+            if (isNearBottom()) {
+                scrollToBottomBtn.classList.remove('visible');
+            } else {
+                scrollToBottomBtn.classList.add('visible');
+            }
+        }
+
+        questionsWrapper.addEventListener('scroll', () => {
+            clearTimeout(scrollTimeout);
+            isUserScrolling = true;
+
+            updateScrollButton();
+
+            scrollTimeout = setTimeout(() => {
+                isUserScrolling = false;
+                autoScroll = isNearBottom();
+            }, 150);
+        });
+
+        scrollToBottomBtn.addEventListener('click', () => {
+            scrollToBottom(true);
+            autoScroll = true;
+        });
+
         const copyLinkButton = document.querySelector('.copy-link-button')
         copyLinkButton?.addEventListener('click', function () {
             const sessionLink = `${window.location.origin}/sessions/${session.id}`
             navigator.clipboard.writeText(sessionLink).then(function () {
-                alert('Session link copied to clipboard!')
+                // Create a temporary notification
+                const originalText = copyLinkButton.textContent;
+                copyLinkButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyLinkButton.textContent = originalText;
+                }, 2000);
             }, function (err) {
                 console.error('Could not copy text: ', err)
             });
         });
 
-        function renderQuestions(questions) {
-            const questionsList = document.querySelector('.questions-list')
-            if (!questionsList) return
-            questionsList.innerHTML = ''
-            questionsList.innerHTML = `
-                ${questions.map(question => `
-                    <li class="question-item">
-                        <span class="question-label">Question</span>
-                        <div class="question-text">${question.question}</div>
-                        ${question.answer ? `
-                            <div class="answer-section">
-                                <span class="answer-label">Answer</span>
-                                <div class="answer-text">${question.answer}</div>
-                            </div>
-                        ` : `
-                            ${session.password ? `
-                                <div class="answer-form-container">
-                                    <span class="answer-form-label">Post Your Answer:</span>
-                                    <form class="answer-form inline-form">
-                                        <input type="text" name="question_id" value="${question.id}" style="display: none;" />
-                                        <input type="password" name="password" value="${session.password}" style="display: none;" />
-                                        <input type="text" name="answer" placeholder="Type your answer here..." required />
-                                        <button type="submit">Post</button>
-                                    </form>
-                                </div>
-                            ` : ''}
-                        `}
-                    </li>
-                `).join('')}
-            `
+        function attachAnswerFormListeners() {
             const answerForms = document.querySelectorAll(".answer-form");
 
             answerForms.forEach(form => {
-                form.addEventListener("submit", async function (event) {
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
+
+                newForm.addEventListener("submit", async function (event) {
                     event.preventDefault();
 
-                    const formData = new FormData(form);
+                    const formData = new FormData(newForm);
                     const question_id = formData.get("question_id")?.toString();
                     if (!question_id) return;
                     const answer = formData.get("answer")?.toString();
@@ -496,9 +741,120 @@
                         question: question.question,
                     });
 
-                    form.reset();
+                    newForm.reset();
                 });
             });
+        }
+
+        function renderQuestions(questions, scrollToNew = true) {
+            // Remove empty state if exists
+            const emptyState = questionsList.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            questionsList.innerHTML = questions.map(question => `
+                <li class="question-item" data-question-id="${question.id}">
+                    <span class="question-label">Question</span>
+                    <div class="question-text">${escapeHtml(question.question)}</div>
+                    ${question.answer ? `
+                        <div class="answer-section">
+                            <span class="answer-label">Answer</span>
+                            <div class="answer-text">${escapeHtml(question.answer)}</div>
+                        </div>
+                    ` : `
+                        ${session.password ? `
+                            <div class="answer-form-container">
+                                <span class="answer-form-label">Post Your Answer:</span>
+                                <form class="answer-form inline-form">
+                                    <input type="text" name="question_id" value="${question.id}" style="display: none;" />
+                                    <input type="password" name="password" value="${session.password}" style="display: none;" />
+                                    <input type="text" name="answer" placeholder="Type your answer here..." required />
+                                    <button type="submit">Post</button>
+                                </form>
+                            </div>
+                        ` : ''}
+                    `}
+                </li>
+            `).join('');
+
+            attachAnswerFormListeners();
+
+            if (scrollToNew && (autoScroll || isNearBottom())) {
+                setTimeout(() => scrollToBottom(true), 100);
+            }
+
+            updateScrollButton();
+        }
+
+        function addNewQuestion(question, isNew = true) {
+            const emptyState = questionsList.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            const questionItem = document.createElement('li');
+            questionItem.className = isNew ? 'question-item new-question' : 'question-item';
+            questionItem.dataset.questionId = question.id;
+            questionItem.innerHTML = `
+                <span class="question-label">Question</span>
+                <div class="question-text">${escapeHtml(question.question)}</div>
+                ${question.answer ? `
+                    <div class="answer-section">
+                        <span class="answer-label">Answer</span>
+                        <div class="answer-text">${escapeHtml(question.answer)}</div>
+                    </div>
+                ` : `
+                    ${session.password ? `
+                        <div class="answer-form-container">
+                            <span class="answer-form-label">Post Your Answer:</span>
+                            <form class="answer-form inline-form">
+                                <input type="text" name="question_id" value="${question.id}" style="display: none;" />
+                                <input type="password" name="password" value="${session.password}" style="display: none;" />
+                                <input type="text" name="answer" placeholder="Type your answer here..." required />
+                                <button type="submit">Post</button>
+                            </form>
+                        </div>
+                    ` : ''}
+                `}
+            `;
+
+            questionsList.appendChild(questionItem);
+            attachAnswerFormListeners();
+
+            if (isNew && (autoScroll || isNearBottom())) {
+                setTimeout(() => scrollToBottom(true), 100);
+            }
+
+            updateScrollButton();
+        }
+
+        function updateQuestionAnswer(questionId, answer) {
+            const questionItem = questionsList.querySelector(`[data-question-id="${questionId}"]`);
+            if (!questionItem) return;
+
+            const existingAnswer = questionItem.querySelector('.answer-section');
+            if (existingAnswer) return; // Already has answer
+
+            const answerFormContainer = questionItem.querySelector('.answer-form-container');
+            if (answerFormContainer) {
+                answerFormContainer.remove();
+            }
+
+            const answerSection = document.createElement('div');
+            answerSection.className = 'answer-section';
+            answerSection.innerHTML = `
+                <span class="answer-label">Answer</span>
+                <div class="answer-text">${escapeHtml(answer)}</div>
+            `;
+
+            questionItem.appendChild(answerSection);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         var questions = [];
@@ -533,71 +889,44 @@
                     session_id: session.id,
                     password: session.password
                 });
-                const body = document.querySelector('body')
-                body.textContent = ''
-                h1 = document.createElement('h1')
-                h1.innerText = "Disconnected!"
-                body.appendChild(h1)
+                document.body.innerHTML = '<div class="container"><div class="card empty-state"><h1>Disconnected!</h1><p>The session has ended.</p></div></div>';
             });
 
             socket.on('new-question', function (data) {
-                console.log('New question received:', data)
                 const question = {
                     "id": data['question_id'] ?? '',
                     "question": data['question'] ?? '',
                     "answer": data['answer'] ?? undefined,
                 }
-                if (defaultQuestions.find(q => q.id === question.id)) {
-                    if (data['answer']) {
-                        for (let i = 0; i < defaultQuestions.length; i++) {
-                            if (defaultQuestions[i].id === question.id) {
-                                defaultQuestions[i].answer = data['answer']
-                                break
-                            }
-                        }
-                        renderQuestions(defaultQuestions)
-                    }
-                    return
-                }
-                defaultQuestions.push(question)
-                renderQuestions(defaultQuestions)
-            })
 
-            socket.on('new-answer', function (data) {
-                const questionId = data['question_id'] ?? ''
-                const questionText = data['question'] ?? ''
-                const answer = data['answer'] ?? ''
-                var found = false
-                for (let i = 0; i < defaultQuestions.length; i++) {
-                    if (defaultQuestions[i].id === questionId) {
-                        defaultQuestions[i].answer = answer
-                        break
+                const existingQuestion = defaultQuestions.find(q => q.id === question.id);
+
+                if (existingQuestion) {
+                    if (data['answer']) {
+                        existingQuestion.answer = data['answer'];
+                        updateQuestionAnswer(question.id, data['answer']);
                     }
+                } else {
+                    defaultQuestions.push(question);
+                    addNewQuestion(question, true);
                 }
-                if (!found) {
-                    defaultQuestions?.push({
-                        "id": questionId,
-                        "question": questionText,
-                        "answer": answer
-                    })
-                }
-                renderQuestions(defaultQuestions)
             })
         })
 
         const endButton = document.querySelector('#end-session')
         endButton?.addEventListener('click', function () {
-            socket.emit('end-session', {
-                session_id: session.id,
-                password: session.password ?? ''
-            });
+            if (confirm('Are you sure you want to end this session?')) {
+                socket.emit('end-session', {
+                    session_id: session.id,
+                    password: session.password ?? ''
+                });
+            }
         })
 
         const questionForm = document.querySelector("#question-submit-form");
 
         questionForm?.addEventListener("submit", function (event) {
             event.preventDefault();
-            console.log("Submitting question...");
 
             const formData = new FormData(questionForm);
             const session_id = formData.get("session_id");
@@ -606,6 +935,12 @@
             socket.emit('post-question', {session_id: session_id, question: question})
             questionForm.reset();
         });
+
+        // Initial scroll to bottom
+        setTimeout(() => {
+            scrollToBottom(false);
+            updateScrollButton();
+        }, 100);
     </script>
 </body>
 
