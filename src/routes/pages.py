@@ -29,32 +29,7 @@ def session_page(session_id: str):
         return ("Not Found", 404)
 
     return render_template(
-        'session.html',
-        password=(password if owner else None),
-        session=session,
-        questions=questions)
-
-
-@pages_blueprint.route('/sessions/chat/<session_id>', methods=["GET"])
-def realtime_session_page(session_id: str):
-    owner = False
-
-    password = request.args.get('password')
-
-    if password and session_service.is_session_owner(session_id, password):
-        owner = True
-
-    res = session_service.get_session(session_id, password)
-    if res is None:
-        return ("Not Found", 404)
-
-    session, questions = res
-
-    if not session:
-        return ("Not Found", 404)
-
-    return render_template(
-        'real-time-session.html',
+        'real-time-session.html' if session.is_live else 'session.html',
         password=(password if owner else None),
         session=session,
         questions=questions)
