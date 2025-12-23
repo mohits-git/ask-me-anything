@@ -338,8 +338,13 @@
                         placeholder="Enter the session expiration in hours" required min="1" max="24">
                 </div>
 
+                <input type="hidden" id="is_live" name="is_live" value="false" />
                 <button type="submit">
                     Create AMA Link
+                </button>
+
+                <button type="submit" id="live-session-button">
+                    Create Live Session
                 </button>
             </form>
 
@@ -401,6 +406,11 @@
             const password = formData.get("password")?.toString();
             if (!password) return;
             const expires_in = formData.get("expires_in")
+            const is_live_str = formData.get("is_live")
+            console.log(is_live_str)
+            const is_live = (is_live_str === "true" ? true : false)
+            console.log(is_live)
+
 
             const response = await fetch("/api/sessions", {
                 method: "POST",
@@ -411,12 +421,18 @@
                     name: name,
                     password: password,
                     expires_in: expires_in,
+                    is_live: is_live,
                 })
             });
 
             const responseData = await response.json();
             const ama_url = responseData.ama_url
             amaForm.reset();
+
+            if (is_live) {
+                window.location.assign(ama_url + `?password=${password}`)
+                return
+            }
 
             amaLinkContainer.innerHTML = '';
             amaLinkContainer.classList.add('active');
@@ -431,6 +447,10 @@
             amaLinkContainer.appendChild(h3)
             amaLinkContainer.appendChild(a)
         });
+
+        document.querySelector('#live-session-button')?.addEventListener('click', function() {
+            document.querySelector('#is_live').value = "true"
+        })
     </script>
 </body>
 

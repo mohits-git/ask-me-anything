@@ -73,10 +73,23 @@
             z-index: 1;
         }
 
+        .nav {
+            display: flex;
+            justify-content: end;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .copy-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
         header {
             text-align: center;
             margin-bottom: 48px;
-            animation: fadeInDown 0.8s ease-out;
         }
 
         h1 {
@@ -119,13 +132,11 @@
             box-shadow: 0 4px 20px var(--shadow);
             border: 1px solid var(--border);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            animation: fadeInUp 0.8s ease-out backwards;
         }
 
         .empty-state {
             text-align: center;
             padding: 60px 40px;
-            animation: fadeInUp 0.8s ease-out;
         }
 
         .empty-state h1 {
@@ -152,32 +163,11 @@
             padding: 24px;
             border: 2px solid var(--border);
             transition: all 0.3s ease;
-            animation: slideIn 0.5s ease-out backwards;
         }
 
         .question-item:hover {
             border-color: var(--primary-light);
             box-shadow: 0 4px 12px var(--shadow);
-        }
-
-        .question-item:nth-child(1) {
-            animation-delay: 0.1s;
-        }
-
-        .question-item:nth-child(2) {
-            animation-delay: 0.15s;
-        }
-
-        .question-item:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .question-item:nth-child(4) {
-            animation-delay: 0.25s;
-        }
-
-        .question-item:nth-child(5) {
-            animation-delay: 0.3s;
         }
 
         .question-label {
@@ -324,42 +314,6 @@
             padding: 14px 32px;
         }
 
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
         @media (max-width: 640px) {
             .card {
                 padding: 28px 24px;
@@ -394,6 +348,18 @@
 
 <body>
     <div class="container">
+        <div class='nav'>
+            <div class="copy-link">
+                <button class="copy-link-button">
+                    Invite People
+                </button>
+            </div>
+            {% if password %}
+            <button id='end-session' type="button">
+                End Session
+            </button>
+            {% endif %}
+        </div>
         {% if session %}
         <header>
             <h1>Ask Anything From <span class="session-name">{{ session.name }}</span> Anonymously!</h1>
@@ -457,9 +423,189 @@
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
         integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
         crossorigin="anonymous"></script>
-    <script>
+    <script type="text/javascript" charset="utf-8">
         const session = JSON.parse('{{ session|tojson }}')
-        // const socket = io(`http://localhost:5000/session/${session.id}`)
+        const password = '{{ password|default('') }}'
+        session.password = password ? password : null;
+        if (session.password === 'None') {
+            session.password = null
+        }
+
+        const copyLinkButton = document.querySelector('.copy-link-button')
+        copyLinkButton?.addEventListener('click', function () {
+            const sessionLink = `${window.location.origin}/sessions/${session.id}`
+            navigator.clipboard.writeText(sessionLink).then(function () {
+                alert('Session link copied to clipboard!')
+            }, function (err) {
+                console.error('Could not copy text: ', err)
+            });
+        });
+
+        function renderQuestions(questions) {
+            const questionsList = document.querySelector('.questions-list')
+            if (!questionsList) return
+            questionsList.innerHTML = ''
+            questionsList.innerHTML = `
+                ${questions.map(question => `
+                    <li class="question-item">
+                        <span class="question-label">Question</span>
+                        <div class="question-text">${question.question}</div>
+                        ${question.answer ? `
+                            <div class="answer-section">
+                                <span class="answer-label">Answer</span>
+                                <div class="answer-text">${question.answer}</div>
+                            </div>
+                        ` : `
+                            ${session.password ? `
+                                <div class="answer-form-container">
+                                    <span class="answer-form-label">Post Your Answer:</span>
+                                    <form class="answer-form inline-form">
+                                        <input type="text" name="question_id" value="${question.id}" style="display: none;" />
+                                        <input type="password" name="password" value="${session.password}" style="display: none;" />
+                                        <input type="text" name="answer" placeholder="Type your answer here..." required />
+                                        <button type="submit">Post</button>
+                                    </form>
+                                </div>
+                            ` : ''}
+                        `}
+                    </li>
+                `).join('')}
+            `
+            const answerForms = document.querySelectorAll(".answer-form");
+
+            answerForms.forEach(form => {
+                form.addEventListener("submit", async function (event) {
+                    event.preventDefault();
+
+                    const formData = new FormData(form);
+                    const question_id = formData.get("question_id")?.toString();
+                    if (!question_id) return;
+                    const answer = formData.get("answer")?.toString();
+                    if (!answer) return;
+                    const password = formData.get("password")?.toString();
+                    if (!password) return;
+
+                    const question = defaultQuestions.find(q => q.id === question_id);
+                    if (!question) return;
+
+                    socket.emit('post-answer', {
+                        session_id: session.id,
+                        password: password,
+                        question_id: question_id,
+                        answer: answer,
+                        question: question.question,
+                    });
+
+                    form.reset();
+                });
+            });
+        }
+
+        var questions = [];
+        try {
+            questions = JSON.parse('{{ questions|tojson }}');
+        } catch {
+            questions = [];
+        }
+
+        const defaultQuestions = questions || []
+        renderQuestions(defaultQuestions)
+
+        // WebSocket connection
+        const socket = io()
+
+        socket.on('connect', function () {
+            socket.emit('join', {session_id: session.id, password: session.password ?? ''})
+
+            socket.on('error', function (data) {
+                alert(`ERROR: ${data.message}`)
+            });
+
+            socket.on('close', function (data) {
+                if (data.message) {
+                    console.log(data.message)
+                    socket.disconnect()
+                }
+            });
+
+            socket.on('disconnect', function () {
+                socket.emit('leave', {
+                    session_id: session.id,
+                    password: session.password
+                });
+                const body = document.querySelector('body')
+                body.textContent = ''
+                h1 = document.createElement('h1')
+                h1.innerText = "Disconnected!"
+                body.appendChild(h1)
+            });
+
+            socket.on('new-question', function (data) {
+                console.log('New question received:', data)
+                const question = {
+                    "id": data['question_id'] ?? '',
+                    "question": data['question'] ?? '',
+                    "answer": data['answer'] ?? undefined,
+                }
+                if (defaultQuestions.find(q => q.id === question.id)) {
+                    if (data['answer']) {
+                        for (let i = 0; i < defaultQuestions.length; i++) {
+                            if (defaultQuestions[i].id === question.id) {
+                                defaultQuestions[i].answer = data['answer']
+                                break
+                            }
+                        }
+                        renderQuestions(defaultQuestions)
+                    }
+                    return
+                }
+                defaultQuestions.push(question)
+                renderQuestions(defaultQuestions)
+            })
+
+            socket.on('new-answer', function (data) {
+                const questionId = data['question_id'] ?? ''
+                const questionText = data['question'] ?? ''
+                const answer = data['answer'] ?? ''
+                var found = false
+                for (let i = 0; i < defaultQuestions.length; i++) {
+                    if (defaultQuestions[i].id === questionId) {
+                        defaultQuestions[i].answer = answer
+                        break
+                    }
+                }
+                if (!found) {
+                    defaultQuestions?.push({
+                        "id": questionId,
+                        "question": questionText,
+                        "answer": answer
+                    })
+                }
+                renderQuestions(defaultQuestions)
+            })
+        })
+
+        const endButton = document.querySelector('#end-session')
+        endButton?.addEventListener('click', function () {
+            socket.emit('end-session', {
+                session_id: session.id,
+                password: session.password ?? ''
+            });
+        })
+
+        const questionForm = document.querySelector("#question-submit-form");
+
+        questionForm?.addEventListener("submit", function (event) {
+            event.preventDefault();
+            console.log("Submitting question...");
+
+            const formData = new FormData(questionForm);
+            const session_id = formData.get("session_id");
+            const question = formData.get("question");
+
+            socket.emit('post-question', {session_id: session_id, question: question})
+            questionForm.reset();
+        });
     </script>
 </body>
 
