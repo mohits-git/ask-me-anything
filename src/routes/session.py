@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from app import session_service, base_url
+from app import app
 import time
 
 
@@ -38,8 +38,8 @@ def create_session():
 
     if name is None or password is None:
         return ("Bad Request", 400)
-    session_id = session_service.create_session(name, password, expires_at)
-    ama_url = f"{base_url}/sessions/{session_id}"
+    session_id = app.session_service.create_session(name, password, expires_at)
+    ama_url = f"{app.base_url}/sessions/{session_id}"
     return {
         "ama_url": ama_url
     }
@@ -58,7 +58,7 @@ def get_session(session_id: str):
     authorization_header = request.headers.get('Authorization')
     password = authorization_header.removeprefix(
         'Basic ') if authorization_header else None
-    res = session_service.get_session(
+    res = app.session_service.get_session(
         session_id, password or None)
     if res is None:
         return ("Not Found", 404)

@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from app import questions_service
+from app import app
 
 
 questions_blueprint = Blueprint('question', __name__, url_prefix='/api')
@@ -25,7 +25,7 @@ def create_question():
         question = data['question']
     if not session_id or not question:
         return ("Bad Request", 400)
-    question_id = questions_service.create_question(
+    question_id = app.questions_service.create_question(
         session_id, question)
     return {'question_id': question_id}
 
@@ -46,7 +46,7 @@ def answer_question(question_id):
     if not password:
         return ("Invalid Password", 401)
     try:
-        questions_service.submit_answer(
+        app.questions_service.submit_answer(
             password, question_id, data['answer'])
     except Exception as e:
         return (str(e), 500)

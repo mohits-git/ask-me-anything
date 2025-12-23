@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from app import session_service
+from app import app
 
 
 pages_blueprint = Blueprint('pages', __name__)
@@ -16,10 +16,10 @@ def session_page(session_id: str):
 
     password = request.args.get('password')
 
-    if password and session_service.is_session_owner(session_id, password):
+    if password and app.session_service.is_session_owner(session_id, password):
         owner = True
 
-    res = session_service.get_session(session_id, password)
+    res = app.session_service.get_session(session_id, password)
     if res is None:
         return ("Not Found", 404)
 
