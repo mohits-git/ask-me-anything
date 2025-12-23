@@ -396,7 +396,7 @@
     <div class="container">
         {% if session %}
         <header>
-            <h1>Ask <span class="session-name">{{ session.name }}</span></h1>
+            <h1>Ask Anything From <span class="session-name">{{ session.name }}</span> Anonymously!</h1>
         </header>
         {% else %}
         <div class="card empty-state">
@@ -405,6 +405,16 @@
         </div>
         {% endif %}
 
+        {% if session %}
+        <div class="card ask-form-card">
+            <h3>Ask a question</h3>
+            <form id="question-submit-form" class="inline-form">
+                <input name="session_id" value="{{ session.id }}" style="display: none;" />
+                <input type="text" name="question" placeholder="What would you like to ask?" required>
+                <button type="submit">Ask!</button>
+            </form>
+        </div>
+        {% endif %}
         {% if questions %}
         <div class="card">
             <h2>Questions & Answers</h2>
@@ -442,66 +452,14 @@
             <p>Be the first to ask a question below.</p>
         </div>
         {% endif %}
-
-        {% if session %}
-        <div class="card ask-form-card">
-            <h3>Ask a question</h3>
-            <form id="question-submit-form" class="inline-form">
-                <input name="session_id" value="{{ session.id }}" style="display: none;" />
-                <input type="text" name="question" placeholder="What would you like to ask?" required>
-                <button type="submit">Ask!</button>
-            </form>
-        </div>
-        {% endif %}
     </div>
 
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+        integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+"
+        crossorigin="anonymous"></script>
     <script>
-        const answerForms = document.querySelectorAll(".answer-form");
-
-        answerForms.forEach(form => {
-            form.addEventListener("submit", async function (event) {
-                event.preventDefault();
-
-                const formData = new FormData(form);
-                const question_id = formData.get("question_id")?.toString();
-                if (!question_id) return;
-                const answer = formData.get("answer")?.toString();
-                if (!answer) return;
-                const password = formData.get("password")?.toString();
-                if (!password) return;
-
-                await fetch(`http://localhost:5000/api/questions/${question_id}`, {
-                    method: "PATCH",
-                    headers: {
-                        Authorization: `Basic ${password}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({answer: answer}),
-                });
-
-                window.location.reload();
-            });
-        });
-
-        const questionForm = document.querySelector("#question-submit-form");
-
-        questionForm?.addEventListener("submit", async function (event) {
-            event.preventDefault();
-
-            const formData = new FormData(questionForm);
-            const session_id = formData.get("session_id");
-            const question = formData.get("question");
-
-            await fetch("http://localhost:5000/api/questions", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({session_id: session_id, question: question}),
-            });
-
-            window.location.reload();
-        });
+        const session = JSON.parse('{{ session|tojson }}')
+        // const socket = io(`http://localhost:5000/session/${session.id}`)
     </script>
 </body>
 
