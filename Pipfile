@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 flask = "*"
 bcrypt = "*"
+flask-socketio = "*"
 
 [dev-packages]
 
