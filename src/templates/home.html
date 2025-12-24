@@ -429,23 +429,7 @@
             const ama_url = responseData.ama_url
             amaForm.reset();
 
-            if (is_live) {
-                window.location.assign(ama_url + `?password=${password}`)
-                return
-            }
-
-            amaLinkContainer.innerHTML = '';
-            amaLinkContainer.classList.add('active');
-
-            h3 = document.createElement('h3');
-            h3.innerText = "Your AMA Link is Ready!"
-
-            a = document.createElement('a');
-            a.innerText = ama_url
-            a.href = ama_url
-
-            amaLinkContainer.appendChild(h3)
-            amaLinkContainer.appendChild(a)
+            window.location.assign(ama_url + `?password=${password}`)
         });
 
         document.querySelector('#live-session-button')?.addEventListener('click', function() {
