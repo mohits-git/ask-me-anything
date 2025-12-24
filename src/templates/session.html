@@ -73,6 +73,26 @@
             z-index: 1;
         }
 
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 16px 24px;
+            background: var(--surface);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px var(--shadow);
+            border: 1px solid var(--border);
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         header {
             text-align: center;
             margin-bottom: 48px;
@@ -160,11 +180,25 @@
             box-shadow: 0 4px 12px var(--shadow);
         }
 
-        .question-item:nth-child(1) { animation-delay: 0.1s; }
-        .question-item:nth-child(2) { animation-delay: 0.15s; }
-        .question-item:nth-child(3) { animation-delay: 0.2s; }
-        .question-item:nth-child(4) { animation-delay: 0.25s; }
-        .question-item:nth-child(5) { animation-delay: 0.3s; }
+        .question-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .question-item:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .question-item:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .question-item:nth-child(4) {
+            animation-delay: 0.25s;
+        }
+
+        .question-item:nth-child(5) {
+            animation-delay: 0.3s;
+        }
 
         .question-label {
             font-size: 0.8125rem;
@@ -285,6 +319,15 @@
             transform: translateY(0);
         }
 
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            box-shadow: 0 4px 12px rgba(46, 82, 102, 0.25);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 6px 20px rgba(46, 82, 102, 0.35);
+        }
+
         .ask-form-card {
             background: linear-gradient(135deg, rgba(217, 100, 89, 0.05) 0%, rgba(242, 174, 114, 0.05) 100%);
             border: 2px solid var(--accent-light);
@@ -315,6 +358,7 @@
                 opacity: 0;
                 transform: translateY(-30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -326,6 +370,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -337,6 +382,7 @@
                 opacity: 0;
                 transform: translateX(-20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateX(0);
@@ -371,6 +417,7 @@
             .inline-form button {
                 width: 100%;
             }
+
         }
     </style>
 </head>
@@ -378,45 +425,53 @@
 <body>
     <div class="container">
         {% if session %}
-        <header>
-            <h1>Ask <span class="session-name">{{ session.name }}</span></h1>
-        </header>
-        {% else %}
-        <div class="card empty-state">
-            <h1>Invalid Session</h1>
-            <p>The session you're looking for doesn't exist or has expired.</p>
+        <div class='nav'>
+            <button class="nav-right copy-link-button btn-secondary">
+                Invite People
+            </button>
         </div>
-        {% endif %}
 
+        <header>
+            <h1>Ask Anything From <span class="session-name">{{ session.name }}</span> Anonymously!</h1>
+        </header>
+
+        <div class="card ask-form-card">
+            <h3>Ask a question</h3>
+            <form id="question-submit-form" class="inline-form">
+                <input name="session_id" value="{{ session.id }}" style="display: none;" />
+                <input type="text" name="question" placeholder="What would you like to ask?" required>
+                <button type="submit">Ask!</button>
+            </form>
+        </div>
         {% if questions %}
         <div class="card">
             <h2>Questions & Answers</h2>
             <ul class="questions-list">
-            {% for question in questions %}
+                {% for question in questions %}
                 <li class="question-item">
                     <span class="question-label">Question</span>
                     <div class="question-text">{{ question.question }}</div>
-                    
+
                     {% if question.answer %}
-                        <div class="answer-section">
-                            <span class="answer-label">Answer</span>
-                            <div class="answer-text">{{ question.answer }}</div>
-                        </div>
+                    <div class="answer-section">
+                        <span class="answer-label">Answer</span>
+                        <div class="answer-text">{{ question.answer }}</div>
+                    </div>
                     {% else %}
-                        {% if password %}
-                            <div class="answer-form-container">
-                                <span class="answer-form-label">Post Your Answer:</span>
-                                <form class="answer-form inline-form">
-                                    <input type="text" name="question_id" value="{{ question.id }}" style="display: none;" />
-                                    <input type="password" name="password" value="{{ password }}" style="display: none;" />
-                                    <input type="text" name="answer" placeholder="Type your answer here..." required />
-                                    <button type="submit">Post</button>
-                                </form>
-                            </div>
-                        {% endif %}
+                    {% if password %}
+                    <div class="answer-form-container">
+                        <span class="answer-form-label">Post Your Answer:</span>
+                        <form class="answer-form inline-form">
+                            <input type="text" name="question_id" value="{{ question.id }}" style="display: none;" />
+                            <input type="password" name="password" value="{{ password }}" style="display: none;" />
+                            <input type="text" name="answer" placeholder="Type your answer here..." required />
+                            <button type="submit">Post</button>
+                        </form>
+                    </div>
+                    {% endif %}
                     {% endif %}
                 </li>
-            {% endfor %}
+                {% endfor %}
             </ul>
         </div>
         {% else %}
@@ -426,19 +481,38 @@
         </div>
         {% endif %}
 
-        {% if session %}
-        <div class="card ask-form-card">
-            <h3>Ask a question</h3>
-            <form id="question-submit-form" class="inline-form">
-                <input name="session_id" value="{{ session.id }}" style="display: none;" />
-                <input type="text" name="question" placeholder="What would you like to ask?" required>
-                <button type="submit">Ask!</button>
-            </form>
+        {% else %}
+        <div class="card empty-state">
+            <h1>Invalid Session</h1>
+            <p>The session you're looking for doesn't exist or has expired.</p>
         </div>
         {% endif %}
+
+
     </div>
 
     <script>
+        const session = JSON.parse('{{ session|tojson }}')
+        const password = '{{ password|default('') }}'
+        session.password = password ? password : null;
+        if (session.password === 'None') {
+            session.password = null
+        }
+
+        const copyLinkButton = document.querySelector('.copy-link-button')
+        copyLinkButton?.addEventListener('click', function () {
+            const sessionLink = `${window.location.origin}/sessions/${session.id}`
+            navigator.clipboard.writeText(sessionLink).then(function () {
+                const originalText = copyLinkButton.textContent;
+                copyLinkButton.textContent = 'Invite Link Copied!';
+                setTimeout(() => {
+                    copyLinkButton.textContent = originalText;
+                }, 2000);
+            }, function (err) {
+                console.error('Could not copy text: ', err)
+            });
+        });
+
         const answerForms = document.querySelectorAll(".answer-form");
 
         answerForms.forEach(form => {
@@ -459,7 +533,7 @@
                         Authorization: `Basic ${password}`,
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify({ answer: answer }),
+                    body: JSON.stringify({answer: answer}),
                 });
 
                 window.location.reload();
@@ -480,11 +554,12 @@
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ session_id: session_id, question: question }),
+                body: JSON.stringify({session_id: session_id, question: question}),
             });
 
             window.location.reload();
         });
+
     </script>
 </body>
 

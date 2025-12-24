@@ -29,7 +29,7 @@ def session_page(session_id: str):
         return ("Not Found", 404)
 
     return render_template(
-        'session.html',
+        'real-time-session.html' if session.is_live else 'session.html',
         password=(password if owner else None),
         session=session,
         questions=questions)

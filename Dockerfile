@@ -18,4 +18,4 @@ COPY . .
 
 ENV PATH="/opt/venv/bin:$PATH"
 
-CMD ["/opt/venv/bin/gunicorn", "--chdir", "src", "--bind", "0.0.0.0:5000", "main:main()"]
+CMD ["/opt/venv/bin/gunicorn", "--chdir", "src", "--bind", "0.0.0.0:5000", "--worker-class", "eventlet", "main:main()"]

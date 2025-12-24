@@ -7,6 +7,7 @@ class Session:
     name: str
     password_hash: str
     expires_at: int
+    is_live: bool
 
 
 @dataclass
