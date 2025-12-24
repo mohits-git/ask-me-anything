@@ -889,7 +889,7 @@
                     session_id: session.id,
                     password: session.password
                 });
-                document.body.innerHTML = '<div class="container"><div class="card empty-state"><h1>Disconnected!</h1><p>The session has ended.</p></div></div>';
+                document.body.innerHTML = '<div class="container"><div class="card empty-state"><h1>Disconnected!</h1><p>The session has ended.</p><p><a href="http://localhost:5000">Home</a></p></div></div>';
             });
 
             socket.on('new-question', function (data) {
