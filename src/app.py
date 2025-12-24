@@ -30,7 +30,6 @@ class App:
         self._initialized = True
 
     def __new__(cls, *args, **kwargs):
-        print('new called')
         if cls._instance is None:
             cls._instance = super(App, cls).__new__(cls)
         return cls._instance

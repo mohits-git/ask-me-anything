@@ -19,11 +19,17 @@ def create_socketio():
     return socketio
 
 
-def run():
+def main():
     app = create_flask_app()
     socketio = create_socketio()
     socketio.init_app(app)
-    socketio.run(app, port=5000, debug=True)
+    return app
+
+
+# for dev
+def run():
+    app = main()
+    app.run(port=5000, debug=True)
 
 
 if __name__ == '__main__':
